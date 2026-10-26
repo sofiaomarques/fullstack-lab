@@ -1,8 +1,6 @@
 from datetime import date
 from sqlalchemy import CheckConstraint, Date, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import Integer
-from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
 
