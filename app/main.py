@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.database import Base, make_engine
 from app.db_session import find_event, get_session
 from app.models import Event, Registration
+from app.registrations import router as registrations_router
 
 
 class EventInput(BaseModel):
@@ -40,6 +41,7 @@ def create_app(database_url: str | None = None) -> FastAPI:
     engine = make_engine(database_url or "sqlite://")
     Base.metadata.create_all(engine)
     app.state.engine = engine
+    app.include_router(registrations_router)
 
     @app.get("/events")
     def list_events(session: Session = Depends(get_session)):
