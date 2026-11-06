@@ -16,7 +16,7 @@ export default function App() {
         setLoading(false)
       })
       .catch(erro => {
-        setError(erro.message)
+        setError('Não foi possível carregar os eventos.')
         setLoading(false)
       })
   }, [])
