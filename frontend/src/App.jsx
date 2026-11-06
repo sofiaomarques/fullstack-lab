@@ -8,7 +8,8 @@ export default function App() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-
+  const [sending, setSending] = useState(null)
+  const [message, setMessage] = useState('')
   useEffect(() => {
     listEvents()
       .then(lista => {
@@ -20,6 +21,20 @@ export default function App() {
         setLoading(false)
       })
   }, [])
+    async function handleRegister(eventId) {
+    setSending(eventId)
+    setMessage('')
+    setError('')
+    try {
+      await register(eventId, userId)
+      setEvents(await listEvents())
+      setMessage('Inscrição realizada.')
+    } catch (erro) {
+         setError(erro.message)
+    } finally {
+      setSending(null)
+    }
+  }
   return <main className="page">
     <header>
       <p className="eyebrow">Trilha · Laboratório Full Stack</p>
@@ -36,13 +51,20 @@ export default function App() {
     <section aria-label="Lista de eventos" className="events">
       {loading && <p>Carregando...</p>}
       {error && <p role="alert">{error}</p>}
-      {!loading && !error && events.length === 0 && <p>Nenhum evento disponível.</p>}
-      {events.map(event => (
+      {message && <p role="status">{message}</p>}
+      {!loading && !error && events.length === 0 && <p>Nenhum evento cadastrado.</p>}
+            {events.map(event => (
         <article className="card" key={event.id}>
           <p className="date">{event.date}</p>
           <h2>{event.title}</h2>
-          <p>{event.available_slots} vagas disponíveis</p>
-          <button type="button">Inscrever-se</button>
+          <p>{event.available_slots} {event.available_slots === 1 ? 'vaga disponível' : 'vagas disponíveis'}</p>
+          <button
+            type="button"
+            disabled={sending === event.id || event.available_slots === 0}
+            onClick={() => handleRegister(event.id)}
+          >
+            {sending === event.id ? 'Inscrevendo..' : 'Inscrever-se'}
+          </button>
         </article>
       ))}
     </section>
