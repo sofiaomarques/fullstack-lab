@@ -1,12 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { listEvents, register } from './api.js'
 
 // Esta tela já tem a estrutura visual. Sua tarefa é ligá-la à API e ao estado React.
 // Consulte docs/checkpoint-04.md antes de substituir os dados de exemplo.
 export default function App() {
   const [userId, setUserId] = useState(1)
-  const example = { id: 0, title: 'Exemplo de evento', date: '2026-10-10', available_slots: 2 }
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
+  useEffect(() => {
+    listEvents()
+      .then(lista => {
+        setEvents(lista)
+        setLoading(false)
+      })
+      .catch(erro => {
+        setError(erro.message)
+        setLoading(false)
+      })
+  }, [])
   return <main className="page">
     <header>
       <p className="eyebrow">Trilha · Laboratório Full Stack</p>
@@ -20,14 +33,18 @@ export default function App() {
         <option value="2">Pessoa 2</option>
       </select>
     </label>
-
     <section aria-label="Lista de eventos" className="events">
-      <article className="card">
-        <p className="date">{example.date}</p>
-        <h2>{example.title}</h2>
-        <p>{example.available_slots} vagas disponíveis</p>
-        <button type="button">Inscrever-se</button>
-      </article>
+      {loading && <p>Carregando...</p>}
+      {error && <p role="alert">{error}</p>}
+      {!loading && !error && events.length === 0 && <p>Nenhum evento disponível.</p>}
+      {events.map(event => (
+        <article className="card" key={event.id}>
+          <p className="date">{event.date}</p>
+          <h2>{event.title}</h2>
+          <p>{event.available_slots} vagas disponíveis</p>
+          <button type="button">Inscrever-se</button>
+        </article>
+      ))}
     </section>
   </main>
 }
