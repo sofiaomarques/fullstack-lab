@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 import { listEvents, register } from './api.js'
 
-// Esta tela já tem a estrutura visual. Sua tarefa é ligá-la à API e ao estado React.
-// Consulte docs/checkpoint-04.md antes de substituir os dados de exemplo.
 export default function App() {
   const [userId, setUserId] = useState(1)
   const [events, setEvents] = useState([])
@@ -16,7 +14,7 @@ export default function App() {
         setEvents(lista)
         setLoading(false)
       })
-      .catch(erro => {
+            .catch(() => {
         setError('Não foi possível carregar os eventos.')
         setLoading(false)
       })
